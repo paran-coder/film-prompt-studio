@@ -32,7 +32,7 @@
 
     const presetWrap = $('#presetPreview');
     if (presetWrap) {
-      presetWrap.innerHTML = D().presets.map(p => {
+      presetWrap.innerHTML = D().presets.slice(0, 8).map(p => {
         const mood = E().byId(D().moods, p.mood);
         const film = E().byId(D().films, p.film);
         return `<article class="preset-card">
@@ -300,8 +300,209 @@
     });
   }
 
+
+
+  function esc(value){
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  async function copyText(text){
+    try {
+      await navigator.clipboard.writeText(text || '');
+      toast('복사되었습니다.');
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text || '';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+      toast('복사되었습니다.');
+    }
+  }
+
+  function presetInputFor(id){
+    const p = E().byId(D().presets, id) || D().presets[0];
+    return Object.assign({
+      subjectType: p.subjectType,
+      moodId: p.mood,
+      filmId: p.film,
+      lensId: p.lens,
+      angleId: p.angle,
+      compositionId: p.composition,
+      lightingId: p.lighting,
+      effectIds: p.effects || [],
+      ratio: p.ratio || 'auto',
+      strength: 'balanced',
+      platform: 'midjourney'
+    }, p.input || {});
+  }
+
+  function presetCardLegacy(p){
+    const mood = E().byId(D().moods, p.mood);
+    const film = E().byId(D().films, p.film);
+    return `<article class="preset-card preset-card-legacy" data-preset="${esc(p.id)}">
+      <div class="preset-kicker">${esc(mood?.label || '')} · ${esc(film?.label || '')}</div>
+      <h3>${esc(p.title)}</h3>
+      <p>${esc(p.input?.mainSubject || '')}</p>
+      <div class="tags">${(p.tags || []).slice(0,4).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+      <div class="preset-actions">
+        <a class="btn small primary" href="builder.html?preset=${encodeURIComponent(p.id)}">Builder로 열기</a>
+        <button class="btn small secondary" data-preview="${esc(p.id)}" type="button">상세</button>
+      </div>
+    </article>`;
+  }
+
+  function galleryCardLegacy(p, index){
+    const result = E().generatePrompts(presetInputFor(p.id));
+    const gradients = ['#263d31,#c99147','#7a4f32,#263d31','#1d2e2b,#8a6d49','#33251e,#b17842','#425947,#d0b184'];
+    const firstLines = result.prompts.midjourney.split('\n').slice(0, 2).join(' ');
+    return `<article class="gallery-card gallery-card-legacy">
+      <div class="photo-thumb" style="background-image:linear-gradient(135deg, ${gradients[index % gradients.length]});"></div>
+      <div class="gallery-body">
+        <div class="preset-kicker">Prompt Score ${result.score.total}</div>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(firstLines)}</p>
+        <div class="tags">${(p.tags||[]).slice(0,4).map(t=>`<span class="tag green">${esc(t)}</span>`).join('')}</div>
+        <div class="card-actions">
+          <button class="btn small secondary" data-copy-prompt="${esc(p.id)}" type="button">프롬프트 복사</button>
+          <a class="btn small primary" href="builder.html?preset=${encodeURIComponent(p.id)}">이 조합으로 시작</a>
+        </div>
+      </div>
+    </article>`;
+  }
+
+  function initPresets(){
+    if (document.body.dataset.page !== 'presets') return;
+    setOptions($('#filterMood'), D().moods, 'label', true);
+    setOptions($('#filterFilm'), D().films, 'label', true);
+    const autoM = $('#filterMood option[value="auto"]'); if (autoM) autoM.textContent = '전체 무드';
+    const autoF = $('#filterFilm option[value="auto"]'); if (autoF) autoF.textContent = '전체 필름';
+    const focus = getParam('focus');
+
+    function filtered(){
+      const q = ($('#presetSearch')?.value || '').toLowerCase();
+      const mood = $('#filterMood')?.value || 'auto';
+      const film = $('#filterFilm')?.value || 'auto';
+      return D().presets.filter(p => {
+        const haystack = [p.title, ...(p.tags||[]), p.input?.mainSubject, p.input?.place].join(' ').toLowerCase();
+        return (mood === 'auto' || p.mood === mood) && (film === 'auto' || p.film === film) && (!q || haystack.includes(q));
+      });
+    }
+
+    function showDetail(id){
+      const p = E().byId(D().presets, id) || D().presets[0];
+      const result = E().generatePrompts(presetInputFor(p.id));
+      const detail = $('#presetDetail');
+      if (!detail) return;
+      detail.innerHTML = `<div class="preset-kicker">Preset Detail</div>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.input?.mainSubject || '')}</p>
+        <div class="tags">${(p.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+        <textarea class="code" readonly>${esc(result.prompts.midjourney)}</textarea>
+        <div class="card-actions">
+          <a class="btn small primary" href="builder.html?preset=${encodeURIComponent(p.id)}">Builder로 열기</a>
+          <button class="btn small secondary" id="copyPresetPrompt" type="button">복사</button>
+        </div>`;
+      $('#copyPresetPrompt')?.addEventListener('click', () => copyText(result.prompts.midjourney));
+    }
+
+    function render(){
+      const list = filtered();
+      const listEl = $('#presetList');
+      if (listEl) listEl.innerHTML = list.map(presetCardLegacy).join('') || '<div class="notice">검색 결과가 없습니다.</div>';
+      $$('#presetList [data-preview]').forEach(btn => btn.addEventListener('click', () => showDetail(btn.dataset.preview)));
+      if ($('#presetCount')) $('#presetCount').textContent = `${list.length} presets`;
+      if (list[0]) showDetail(focus || list[0].id);
+    }
+
+    ['presetSearch','filterMood','filterFilm'].forEach(id => $('#'+id)?.addEventListener('input', render));
+    ['filterMood','filterFilm'].forEach(id => $('#'+id)?.addEventListener('change', render));
+    render();
+  }
+
+  function initGallery(){
+    if (document.body.dataset.page !== 'gallery') return;
+    setOptions($('#galleryMood'), D().moods, 'label', true);
+    const auto = $('#galleryMood option[value="auto"]'); if (auto) auto.textContent = '전체 무드';
+
+    function render(){
+      const mood = $('#galleryMood')?.value || 'auto';
+      const q = ($('#gallerySearch')?.value || '').toLowerCase();
+      const list = D().presets.filter(p => {
+        const haystack = [p.title, ...(p.tags||[]), p.input?.mainSubject, p.input?.place].join(' ').toLowerCase();
+        return (mood === 'auto' || p.mood === mood) && (!q || haystack.includes(q));
+      });
+      if ($('#galleryList')) $('#galleryList').innerHTML = list.map(galleryCardLegacy).join('') || '<div class="notice">검색 결과가 없습니다.</div>';
+      $$('#galleryList [data-copy-prompt]').forEach(btn => btn.addEventListener('click', () => copyText(E().generatePrompts(presetInputFor(btn.dataset.copyPrompt)).prompts.midjourney)));
+      if ($('#galleryCount')) $('#galleryCount').textContent = `${list.length} examples`;
+    }
+
+    ['galleryMood','gallerySearch'].forEach(id => $('#'+id)?.addEventListener('input', render));
+    $('#galleryMood')?.addEventListener('change', render);
+    render();
+  }
+
+  const LOCAL_KEY = 'film_prompt_studio_saved_prompts';
+  function setSavedList(list){ localStorage.setItem(LOCAL_KEY, JSON.stringify(list)); }
+  function exportSavedList(){
+    const blob = new Blob([JSON.stringify(E().getSaved(), null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'film-prompt-studio-prompts.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function initWorkspace(){
+    if (document.body.dataset.page !== 'workspace') return;
+    function render(){
+      const q = ($('#workspaceSearch')?.value || '').toLowerCase();
+      const tab = $('#workspaceTab')?.value || 'all';
+      const saved = E().getSaved();
+      const list = saved.filter(item => {
+        const haystack = [item.title, ...(item.tags||[]), item.input?.mainSubject].join(' ').toLowerCase();
+        if (tab === 'favorite' && !item.favorite) return false;
+        if (tab === 'highscore' && (item.score?.total || 0) < 90) return false;
+        if (tab === 'midjourney' && !item.outputs?.midjourney) return false;
+        return !q || haystack.includes(q);
+      });
+      const target = $('#workspaceList');
+      if (target) target.innerHTML = list.map(item => `<article class="saved-card">
+        <div class="saved-top"><div><h3>${esc(item.title || 'Untitled Prompt')}</h3><small>Score ${item.score?.total || '-'} · ${esc(item.createdAt?.slice(0,10) || '')}</small></div><button class="icon-btn ${item.favorite?'active':''}" data-fav="${esc(item.id)}" type="button">★</button></div>
+        <p>${esc(item.outputs?.midjourney?.split('\n')[0] || item.input?.mainSubject || '')}</p>
+        <div class="tags">${(item.tags||[]).slice(0,5).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+        <div class="card-actions"><a class="btn small primary" href="builder.html?saved=${encodeURIComponent(item.id)}">열기</a><button class="btn small secondary" data-copy="${esc(item.id)}" type="button">복사</button><button class="btn small secondary" data-dup="${esc(item.id)}" type="button">복제</button><button class="btn small ghost" data-del="${esc(item.id)}" type="button">삭제</button></div>
+      </article>`).join('') || '<div class="notice">저장된 프롬프트가 없습니다.</div>';
+      if ($('#workspaceCount')) $('#workspaceCount').textContent = String(list.length);
+      $$('#workspaceList [data-copy]').forEach(btn => btn.addEventListener('click', () => { const item=E().getSaved().find(x=>x.id===btn.dataset.copy); copyText(item?.outputs?.midjourney || ''); }));
+      $$('#workspaceList [data-del]').forEach(btn => btn.addEventListener('click', () => { setSavedList(E().getSaved().filter(x=>x.id!==btn.dataset.del)); render(); }));
+      $$('#workspaceList [data-fav]').forEach(btn => btn.addEventListener('click', () => { const list=E().getSaved(); const item=list.find(x=>x.id===btn.dataset.fav); if (item) item.favorite=!item.favorite; setSavedList(list); render(); }));
+      $$('#workspaceList [data-dup]').forEach(btn => btn.addEventListener('click', () => { const item=E().getSaved().find(x=>x.id===btn.dataset.dup); if (item) E().saveLocal(Object.assign({}, item, { title:(item.title || 'Prompt')+' Copy' })); render(); }));
+    }
+    ['workspaceSearch','workspaceTab'].forEach(id => $('#'+id)?.addEventListener('input', render));
+    $('#workspaceTab')?.addEventListener('change', render);
+    $('#exportJson')?.addEventListener('click', exportSavedList);
+    $('#clearAllSaved')?.addEventListener('click', () => { if (confirm('저장된 프롬프트를 모두 삭제할까요?')) { setSavedList([]); render(); } });
+    $('#importJson')?.addEventListener('change', e => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try { const imported = JSON.parse(reader.result); if (Array.isArray(imported)) setSavedList([...imported, ...E().getSaved()]); toast('가져왔습니다.'); render(); }
+        catch { toast('가져오기에 실패했습니다.'); }
+      };
+      reader.readAsText(file);
+    });
+    render();
+  }
+
+
   document.addEventListener('DOMContentLoaded', () => {
     initHome();
     initBuilder();
+    initPresets();
+    initGallery();
+    initWorkspace();
   });
 })();

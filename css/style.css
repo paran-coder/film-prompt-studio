@@ -187,3 +187,12 @@ img{max-width:100%;display:block}
     margin-top:16px;
   }
 }
+
+
+/* v13: restore v4 preset/gallery content structure */
+.legacy-page-title{font-size:clamp(2.8rem,7vw,5.4rem);line-height:.98;letter-spacing:-.075em;margin:12px 0 14px;word-break:keep-all}
+.count-pill{justify-self:end;align-self:end;white-space:nowrap}
+.legacy-filters{display:grid;grid-template-columns:minmax(220px,1fr) minmax(180px,240px) minmax(180px,240px);gap:12px;align-items:center;margin:24px 0 22px}
+.legacy-filters .btn{height:49px}.split-page{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start}.preset-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.preset-card-legacy{min-height:220px}.preset-card-legacy h3{font-size:24px;line-height:1.08;letter-spacing:-.055em;margin:0 0 10px}.preset-card-legacy p{min-height:46px}.detail-panel{position:sticky;top:96px;padding:22px}.detail-panel h3{font-size:30px;line-height:1.06;letter-spacing:-.06em;margin:10px 0}.code{width:100%;min-height:260px;border-radius:18px;border:1px solid rgba(217,203,184,.8);background:#221b15;color:#f8edda;padding:16px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;line-height:1.58;resize:vertical;margin-top:16px}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.legacy-gallery-grid{padding:8px 0 68px}.gallery-card-legacy{background:rgba(255,250,240,.82);border:1px solid rgba(217,203,184,.92);border-radius:26px;box-shadow:var(--shadow);overflow:hidden}.photo-thumb{height:230px;background-size:cover;background-position:center;filter:saturate(.9) contrast(.96)}.gallery-card-legacy .gallery-body{padding:18px}.gallery-card-legacy h3{font-size:24px;line-height:1.08;letter-spacing:-.055em;margin:8px 0 10px}.gallery-card-legacy p{min-height:68px}.card-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}.preset-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.preset-kicker{font-size:12px;font-weight:950;color:var(--brown);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}.tags{display:flex;gap:7px;flex-wrap:wrap}.tag.green{background:rgba(38,61,49,.08);color:var(--deep)}
+@media(max-width:1100px){.split-page{grid-template-columns:1fr}.detail-panel{position:static;order:-1}.grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.legacy-filters,.preset-list,.grid-3{grid-template-columns:1fr}.legacy-page-title{font-size:46px}.count-pill{justify-self:start}.photo-thumb{height:210px}}

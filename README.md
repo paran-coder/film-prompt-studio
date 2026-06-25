@@ -1,4 +1,4 @@
-# Film Prompt Studio v12
+# Film Prompt Studio v13
 
 필름 감성, 렌즈, 구도, 앵글, 조명, 필름 효과를 조합해 **Midjourney 8.1 / GPT Image / Universal** 이미지 프롬프트를 생성하는 순수 HTML/CSS/JavaScript 정적 웹앱입니다.
 
@@ -6,7 +6,7 @@
 
 ## 현재 기준
 
-- 기준 버전: `v12`
+- 기준 버전: `v13`
 - 디자인 기준: `v3 index` 유지
 - 기능 기준: `v5 이후 프롬프트 엔진 / 저장 / 프리셋 확장 기능 유지`
 - 배포 기준: `GitHub Pages root 배포`
@@ -49,7 +49,7 @@ film-prompt-studio/
 
 ## 최신 변경 사항
 
-### v12
+### v13
 
 - `README.md`의 오래된 `v5` 표기를 최신 기준으로 정리했습니다.
 - GitHub Pages 배포용 `.nojekyll` 파일을 추가했습니다.
@@ -119,7 +119,7 @@ assets/
 
 ```text
 잘못된 구조:
-repository/film-prompt-studio-v12/index.html
+repository/film-prompt-studio-v13/index.html
 
 올바른 구조:
 repository/index.html
@@ -188,3 +188,8 @@ workspace.html: 카드형 저장소 구조 유지
 css/style.css: 공통 디자인과 반응형 조정 가능
 js/: 프롬프트 엔진, 저장, 필터 기능 수정 가능
 ```
+
+
+## v13 note
+
+Presets and Gallery were restored to the v4 content set: 32 curated presets, v4-style preset detail, and v4-style gallery cards. `index.html` remains fixed from the restored v3-style baseline.

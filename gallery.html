@@ -29,42 +29,23 @@
     </div>
   </header>
 
-  <main>
-    <section class="builder-header gallery-hero">
-      <div class="container">
-        <span class="eyebrow"><span class="dot"></span> Prompt Gallery</span>
-        <h1><span class="keep">프롬프트 구조를</span><br><span class="keep">눈으로 고르십시오</span></h1>
-        <p><span class="keep">각 갤러리 카드는 하나의 프리셋과 연결됩니다.</span> <span class="keep">이미지를 클릭해 감성을 고르고, Builder로 이동해 피사체와 장면을 바꾸십시오.</span></p>
-      </div>
-    </section>
-
-    <section class="container page-action-strip">
-      <a class="btn primary" href="builder.html">새 프롬프트</a>
-      <a class="btn secondary" href="workspace.html">저장소 보기</a>
-    </section>
-
-    <section class="container gallery-toolbar">    <section class="container gallery-toolbar">
-      <div class="quick-card gallery-filter-card">
-        <div class="quick-grid gallery-filter-grid">
-          <div class="field">
-            <label for="gallerySearch">Search</label>
-            <input id="gallerySearch" class="input" placeholder="예: forest, rain, luxury" />
-          </div>
-          <div class="field">
-            <label for="galleryMoodFilter">Mood</label>
-            <select id="galleryMoodFilter" class="select"></select>
-          </div>
-          <div class="field gallery-count-field">
-            <label>Results</label>
-            <div class="notice"><strong id="galleryCount">0</strong>개 예시</div>
-          </div>
+  <main class="section gallery-legacy-page">
+    <div class="container">
+      <div class="section-head gallery-legacy-head">
+        <div>
+          <span class="eyebrow"><span class="dot"></span> Example Gallery</span>
+          <h1 class="legacy-page-title">프롬프트 예시</h1>
+          <p>시각적 썸네일 카드와 함께 Midjourney 8.1 프롬프트를 확인하고 복사할 수 있습니다.</p>
         </div>
+        <strong id="galleryCount" class="eyebrow count-pill">0 examples</strong>
       </div>
-    </section>
-
-    <section class="container">
-      <div id="galleryGrid" class="gallery-grid"></div>
-    </section>
+      <div class="filters legacy-filters">
+        <input id="gallerySearch" class="input" placeholder="검색: cafe, rain, portrait..." />
+        <select id="galleryMood" class="select"></select>
+        <a class="btn primary" href="builder.html">새로 만들기</a>
+      </div>
+      <div id="galleryList" class="grid-3 legacy-gallery-grid"></div>
+    </div>
   </main>
 
   <div class="toast" role="status" aria-live="polite"></div>

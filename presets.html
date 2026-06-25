@@ -29,48 +29,26 @@
     </div>
   </header>
 
-  <main>
-    <section class="builder-header">
-      <div class="container">
-        <span class="eyebrow"><span class="dot"></span> Preset Library</span>
-        <h1><span class="keep">검증된 필름</span><br><span class="keep">프롬프트 조합</span></h1>
-        <p><span class="keep">무드, 필름, 렌즈, 앵글, 구도, 빛, 효과가 이미 조합된 프리셋입니다.</span> <span class="keep">하나를 선택한 뒤 Builder에서 피사체와 장면만 바꾸면 빠르게 쓸 수 있습니다.</span></p>
+  <main class="section preset-legacy-page">
+    <div class="container">
+      <div class="section-head preset-legacy-head">
+        <div>
+          <span class="eyebrow"><span class="dot"></span> Preset Library</span>
+          <h1 class="legacy-page-title">30개 필름 프리셋</h1>
+          <p>무드·필름·사용 목적별로 바로 열 수 있는 프롬프트 조합입니다.</p>
+        </div>
+        <strong id="presetCount" class="eyebrow count-pill">0 presets</strong>
       </div>
-    </section>
-
-    <section class="container page-action-strip">
-      <a class="btn primary" href="builder.html">빈 Builder 열기</a>
-      <a class="btn secondary" href="gallery.html">예시 갤러리</a>
-    </section>
-
-    <section class="container preset-page-layout">    <section class="container preset-page-layout">
-      <aside class="panel preset-filter">
-        <div class="form-field">
-          <label for="presetSearch">Search</label>
-          <input id="presetSearch" class="input" placeholder="예: rain, wedding, product" />
-        </div>
-        <div class="form-field">
-          <label for="presetMoodFilter">Mood</label>
-          <select id="presetMoodFilter" class="select"></select>
-        </div>
-        <div class="form-field">
-          <label for="presetFilmFilter">Film</label>
-          <select id="presetFilmFilter" class="select"></select>
-        </div>
-        <div class="notice">프리셋은 최종 결과가 아니라 출발점입니다. Builder에서 피사체, 전경, 배경을 바꾸면 같은 무드로 완전히 다른 이미지를 만들 수 있습니다.</div>
-        <div class="score-card mini-stat"><span class="score-label">Available Presets</span><strong id="presetCount">0</strong></div>
-      </aside>
-
-      <section class="preset-content">
-        <div id="presetList" class="preset-grid preset-page-grid"></div>
-      </section>
-
-      <aside id="presetDetail" class="panel preset-detail sticky-detail">
-        <div class="detail-stamp">Preset Breakdown</div>
-        <h2>프리셋을 선택하십시오</h2>
-        <p>프리셋 카드를 누르면 Midjourney 8.1용 샘플 프롬프트와 구성 요소를 확인할 수 있습니다.</p>
-      </aside>
-    </section>
+      <div class="filters legacy-filters">
+        <input id="presetSearch" class="input" placeholder="검색: rain, product, cafe..." />
+        <select id="filterMood" class="select"></select>
+        <select id="filterFilm" class="select"></select>
+      </div>
+      <div class="split-page">
+        <div id="presetList" class="preset-list"></div>
+        <aside class="panel detail-panel" id="presetDetail"></aside>
+      </div>
+    </div>
   </main>
 
   <div class="toast" role="status" aria-live="polite"></div>
