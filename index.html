@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Film Prompt Studio | 필름 감성 AI 이미지 프롬프트 생성기</title>
+  <meta name="description" content="필름 무드, 렌즈, 구도, 앵글, 조명, 효과를 조합해 Midjourney 8.1, GPT Image, Universal 프롬프트를 생성하는 실시간 웹앱입니다." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="page" data-page="home">
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Film Prompt Studio home">
+        <span class="brand-mark">FPS</span>
+        <span class="brand-text"><small>AI Image Prompt Builder</small><span>Film Prompt Studio</span></span>
+      </a>
+      <nav class="nav-links" aria-label="주요 메뉴">
+        <a class="active" href="index.html">Home</a>
+        <a href="builder.html">Builder</a>
+        <a href="presets.html">Presets</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="workspace.html">Workspace</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn small primary" href="builder.html">Start Building</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="dot"></span> Midjourney 8.1 · GPT Image · Universal</span>
+          <h1>필름 감성을<br><span>시각 설계문</span>으로<br>바꾸십시오</h1>
+          <p class="lead">무드, 렌즈, 구도, 앵글, 조명, 필름 효과를 선택하면 피사체·전경·배경·스타일·파라미터가 정리된 이미지 프롬프트를 실시간으로 생성합니다.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="builder.html">프롬프트 만들기</a>
+            <a class="btn secondary" href="#quick">빠른 생성 체험</a>
+          </div>
+          <div class="proof-row" aria-label="기능 요약">
+            <span class="proof">피사체 우선 구조</span>
+            <span class="proof">추상어 → 시각 디테일</span>
+            <span class="proof">3종 출력</span>
+            <span class="proof">로컬 저장</span>
+          </div>
+        </div>
+        <div class="visual-stack" aria-hidden="true">
+          <div class="film-strip"><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="polaroid p1"><img src="assets/images/mood-guide-1.webp" alt=""><p>film mood recipe</p></div>
+          <div class="polaroid p2"><img src="assets/images/lens-guide.webp" alt=""><p>lens grammar</p></div>
+          <div class="polaroid p3"><img src="assets/images/composition-guide.png" alt=""><p>composition system</p></div>
+          <div class="prompt-card-float"><code>A woman in a black wool coat walks across a wet London crosswalk.
+Pale rain clings to her dark hair and transparent umbrella.
+Red bus lights reflect across black pavement.
+Ilford HP5 documentary photography.
+--ar 16:9 --raw --v 8.1</code></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quick" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow"><span class="dot"></span> Quick Builder</span>
+            <h2>원하는 장면을 바로 조합하십시오</h2>
+          </div>
+          <p>피사체와 무드만 입력해도 Builder에서 필름, 렌즈, 구도, 조명, 비율을 자동 보완합니다.</p>
+        </div>
+        <form id="quickForm" class="quick-card">
+          <div class="quick-grid">
+            <div class="field">
+              <label for="quickSubject">Main Subject</label>
+              <input id="quickSubject" class="input" value="a woman in a black wool coat" placeholder="예: 비 오는 거리의 여성" />
+            </div>
+            <div class="field">
+              <label for="quickMood">Mood</label>
+              <select id="quickMood" class="select"></select>
+            </div>
+            <div class="field">
+              <label for="quickTool">Output</label>
+              <select id="quickTool" class="select">
+                <option value="midjourney">Midjourney 8.1</option>
+                <option value="gpt">GPT Image</option>
+                <option value="universal">Universal</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="quickRatio">Ratio</label>
+              <select id="quickRatio" class="select">
+                <option value="auto">자동 추천</option>
+                <option value="4:5">4:5</option>
+                <option value="16:9">16:9</option>
+                <option value="1:1">1:1</option>
+                <option value="2:3">2:3</option>
+              </select>
+            </div>
+            <button class="btn primary" type="submit">생성하기</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow"><span class="dot"></span> Core Functions</span>
+            <h2>감성적이지만 구조적인 프롬프트 도구</h2>
+          </div>
+          <p>키워드를 길게 붙이는 방식이 아니라, 이미지 생성 모델이 읽기 쉬운 시각 설계문을 만듭니다.</p>
+        </div>
+        <div class="features">
+          <article class="feature-card"><div class="feature-icon">01</div><h3>시각 디테일 변환</h3><p>외로움, 따뜻함, 미스터리 같은 추상어를 비, 그림자, 재질, 공간 같은 보이는 요소로 바꿉니다.</p></article>
+          <article class="feature-card"><div class="feature-icon">02</div><h3>사진 문법 기반</h3><p>렌즈, 앵글, 구도, 조명, 필름 효과를 분리해 사진처럼 느껴지는 결과를 유도합니다.</p></article>
+          <article class="feature-card"><div class="feature-icon">03</div><h3>3종 출력</h3><p>Midjourney 8.1, GPT Image, Universal 형식으로 같은 장면을 다르게 정리합니다.</p></article>
+          <article class="feature-card"><div class="feature-icon">04</div><h3>로컬 저장</h3><p>로그인 없이 브라우저에 저장하고 Workspace에서 재사용할 수 있습니다.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="presets" class="section sepia-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow"><span class="dot"></span> Presets</span>
+            <h2>검증된 필름 무드 프리셋</h2>
+          </div>
+          <p>좋은 결과가 잘 나오는 조합을 먼저 불러오고, 피사체와 장면만 바꿔서 빠르게 변형하십시오.</p>
+        </div>
+        <div id="presetPreview" class="preset-grid"></div>
+      </div>
+    </section>
+
+    <section id="examples" class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow"><span class="dot"></span> Output Examples</span>
+            <h2>같은 장면, 다른 출력 방식</h2>
+          </div>
+          <p>Midjourney는 분리된 시각 설계문, GPT는 설명형 문장, Universal은 압축된 하이브리드 형식으로 갑니다.</p>
+        </div>
+        <div class="example-output">
+          <article class="mini-output"><h3>Midjourney 8.1</h3><pre>A woman in a black wool coat walks across a wet London crosswalk.
+Pale rain clings to her dark hair and transparent umbrella.
+Red bus lights reflect across the black pavement.
+Ilford HP5 documentary photography.
+--ar 16:9 --raw --v 8.1</pre></article>
+          <article class="mini-output"><h3>GPT Image</h3><pre>Create a realistic film-style image of a woman in a black wool coat walking across a wet London crosswalk. Use pale rain, red bus reflections, grey mist, and Ilford HP5 documentary film texture.</pre></article>
+          <article class="mini-output"><h3>Universal</h3><pre>Realistic film photo of a woman in a black wool coat, wet London crosswalk, transparent umbrella, red bus reflections, grey mist, Ilford HP5 look, visible grain, lifted blacks.</pre></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container quick-card cta-card">
+        <div>
+          <span class="eyebrow"><span class="dot"></span> Local-first Prototype</span>
+          <h2>감성은 직감으로 고르고, 프롬프트는 구조적으로 만드십시오</h2>
+          <p>Builder에서 3종 프롬프트를 생성하고 Workspace에 저장해 재사용할 수 있습니다.</p>
+        </div>
+        <div class="cta-actions">
+          <a class="btn primary" href="builder.html">Builder 열기</a>
+          <a class="btn secondary" href="workspace.html">Workspace 보기</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <strong>Film Prompt Studio</strong>
+      <span>Analog mood, structured prompt, local-first workflow.</span>
+    </div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Builder | Film Prompt Studio</title>
+  <meta name="description" content="Midjourney 8.1, GPT Image, Universal 프롬프트를 실시간으로 생성하는 Builder입니다." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <meta property="og:image" content="assets/og-image.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="page" data-page="builder">
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Film Prompt Studio home">
+        <span class="brand-mark">FPS</span>
+        <span class="brand-text"><small>AI Image Prompt Builder</small><span>Film Prompt Studio</span></span>
+      </a>
+      <nav class="nav-links" aria-label="주요 메뉴">
+        <a href="index.html">Home</a>
+        <a class="active" href="builder.html">Builder</a>
+        <a href="presets.html">Presets</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="workspace.html">Workspace</a>
+      </nav>
+      <div class="nav-cta">
+        <span class="proof">Saved: <b id="savedCount">0</b></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="builder-header">
+      <div class="container">
+        <span class="eyebrow"><span class="dot"></span> Realtime Prompt Builder</span>
+        <h1><span class="keep">필름 감성 기반</span><br><span class="keep">실시간 프롬프트 생성기</span></h1>
+        <p><span class="keep">좌측에서는 무드와 사진 문법을 고르고,</span> <span class="keep">우측에서는 복사 가능한 3종 프롬프트를 바로 확인합니다.</span></p>
+      </div>
+    </section>
+
+    <section class="container builder-layout">
+      <aside class="panel sticky" aria-label="프롬프트 입력 패널">
+        <div class="form-field field-compact">
+          <label for="presetSelect">Preset Loader</label>
+          <select id="presetSelect" class="select"></select>
+        </div>
+
+        <details class="accordion" open>
+          <summary>1. Subject</summary>
+          <div class="accordion-body">
+            <div class="form-field">
+              <label for="subjectType">Subject Type</label>
+              <select id="subjectType" class="select"></select>
+            </div>
+            <div class="form-field">
+              <label for="mainSubject">Main Subject *</label>
+              <input id="mainSubject" class="input" placeholder="예: a woman in a black wool coat" />
+            </div>
+            <div class="form-field">
+              <label for="visibleTrait">Visible Trait</label>
+              <input id="visibleTrait" class="input" placeholder="예: wet dark hair and a transparent umbrella" />
+            </div>
+            <div class="form-field">
+              <label for="actionPose">Action / Pose</label>
+              <input id="actionPose" class="input" placeholder="예: walks across a wet London crosswalk" />
+            </div>
+          </div>
+        </details>
+
+        <details class="accordion" open>
+          <summary>2. Scene</summary>
+          <div class="accordion-body">
+            <div class="form-field">
+              <label for="place">Place</label>
+              <input id="place" class="input" placeholder="예: rainy London street" />
+            </div>
+            <div class="form-field">
+              <label for="foreground">Foreground</label>
+              <input id="foreground" class="input" placeholder="예: red bus lights reflected on black pavement" />
+            </div>
+            <div class="form-field">
+              <label for="background">Background</label>
+              <input id="background" class="input" placeholder="예: shuttered storefronts and distant streetlights" />
+            </div>
+            <div class="form-field">
+              <label for="weatherTime">Weather / Time</label>
+              <input id="weatherTime" class="input" placeholder="예: grey evening mist and pale rain" />
+            </div>
+          </div>
+        </details>
+
+        <details class="accordion" open>
+          <summary>3. Mood → Visual Details</summary>
+          <div class="accordion-body">
+            <div class="form-field">
+              <label for="moodId">Mood</label>
+              <select id="moodId" class="select"></select>
+            </div>
+            <p id="moodDescription" class="hint-text"></p>
+            <div id="visualChips" class="chip-grid"></div>
+          </div>
+        </details>
+
+        <details class="accordion">
+          <summary>4. Film Mood</summary>
+          <div class="accordion-body">
+            <div id="filmCards" class="select-card-grid"></div>
+          </div>
+        </details>
+
+        <details class="accordion">
+          <summary>5. Lens / Angle / Composition</summary>
+          <div class="accordion-body">
+            <label class="score-label">Lens</label>
+            <div id="lensCards" class="select-card-grid"></div>
+            <label class="score-label block-gap">Angle</label>
+            <div id="angleCards" class="select-card-grid"></div>
+            <label class="score-label block-gap">Composition</label>
+            <div id="compositionCards" class="select-card-grid"></div>
+          </div>
+        </details>
+
+        <details class="accordion">
+          <summary>6. Lighting / Effects</summary>
+          <div class="accordion-body">
+            <label class="score-label">Lighting</label>
+            <div id="lightingCards" class="select-card-grid"></div>
+            <label class="score-label block-gap">Effects · 최대 3개 권장</label>
+            <div id="effectChips" class="chip-grid"></div>
+          </div>
+        </details>
+
+        <details class="accordion" open>
+          <summary>7. Output Settings</summary>
+          <div class="accordion-body">
+            <div class="row-2">
+              <div class="form-field">
+                <label for="ratio">Aspect Ratio</label>
+                <select id="ratio" class="select"></select>
+              </div>
+              <div class="form-field">
+                <label for="strength">Prompt Strength</label>
+                <select id="strength" class="select">
+                  <option value="simple">Simple</option>
+                  <option value="balanced" selected>Balanced</option>
+                  <option value="detailed">Detailed</option>
+                  <option value="cinematic">Cinematic</option>
+                </select>
+              </div>
+            </div>
+            <div id="resolvedRatio" class="notice">적용 비율: --ar 자동</div>
+            <button id="resetBuilder" type="button" class="btn ghost block">초기화</button>
+          </div>
+        </details>
+      </aside>
+
+      <section class="output-shell" aria-label="프롬프트 출력 패널">
+        <article class="output-card">
+          <div class="output-top">
+            <div>
+              <span class="score-label">Prompt Output</span>
+              <h2>3종 출력</h2>
+            </div>
+            <div class="tabs" role="tablist" aria-label="출력 탭">
+              <button class="tab active" data-tab="midjourney" type="button">Midjourney 8.1</button>
+              <button class="tab" data-tab="gpt" type="button">GPT Image</button>
+              <button class="tab" data-tab="universal" type="button">Universal</button>
+            </div>
+          </div>
+          <textarea id="promptOutput" class="prompt-output" spellcheck="false" aria-label="생성 프롬프트"></textarea>
+          <div class="action-row">
+            <button id="copyPrompt" class="btn primary" type="button">현재 프롬프트 복사</button>
+            <button id="savePrompt" class="btn secondary" type="button">로컬 저장</button>
+            <button id="polishPrompt" class="btn ghost" type="button">문장 다듬기</button>
+            <a class="btn ghost" href="workspace.html">Workspace</a>
+          </div>
+        </article>
+
+        <article class="output-card">
+          <div class="output-top">
+            <div>
+              <span class="score-label">Negative Prompt</span>
+              <h2>원치 않는 요소</h2>
+            </div>
+            <button id="copyNegative" class="btn small secondary" type="button">복사</button>
+          </div>
+          <textarea id="negativeOutput" class="negative-output" spellcheck="false" aria-label="네거티브 프롬프트"></textarea>
+        </article>
+
+        <article class="score-card">
+          <div class="score-main">
+            <div>
+              <span class="score-label">Prompt Score</span>
+              <div id="scoreNumber" class="score-number">0</div>
+            </div>
+            <div class="score-copy">중심 피사체, 시각적 구체성, 구도 안정성, 스타일 일관성, v8.1 적합성, 독창성을 기준으로 계산합니다.</div>
+          </div>
+          <div id="scoreBars" class="bars"></div>
+          <div id="notices" class="notice-list"></div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

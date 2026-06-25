@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gallery | Film Prompt Studio</title>
+  <meta name="description" content="필름 프롬프트 프리셋으로 구성한 예시 갤러리와 재사용 가능한 프롬프트 모음입니다." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <meta property="og:image" content="assets/og-image.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="page" data-page="gallery">
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html" aria-label="Film Prompt Studio home">
+        <span class="brand-mark">FPS</span>
+        <span class="brand-text"><small>AI Image Prompt Builder</small><span>Film Prompt Studio</span></span>
+      </a>
+      <nav class="nav-links" aria-label="주요 메뉴">
+        <a href="index.html">Home</a>
+        <a href="builder.html">Builder</a>
+        <a href="presets.html">Presets</a>
+        <a class="active" href="gallery.html">Gallery</a>
+        <a href="workspace.html">Workspace</a>
+      </nav>
+      <div class="nav-cta">
+        <a class="btn small primary" href="presets.html">Preset Library</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="builder-header gallery-hero">
+      <div class="container">
+        <span class="eyebrow"><span class="dot"></span> Prompt Gallery</span>
+        <h1><span class="keep">프롬프트 구조를</span><br><span class="keep">눈으로 고르십시오</span></h1>
+        <p><span class="keep">각 갤러리 카드는 하나의 프리셋과 연결됩니다.</span> <span class="keep">이미지를 클릭해 감성을 고르고, Builder로 이동해 피사체와 장면을 바꾸십시오.</span></p>
+      </div>
+    </section>
+
+    <section class="container page-action-strip">
+      <a class="btn primary" href="builder.html">새 프롬프트</a>
+      <a class="btn secondary" href="workspace.html">저장소 보기</a>
+    </section>
+
+    <section class="container gallery-toolbar">    <section class="container gallery-toolbar">
+      <div class="quick-card gallery-filter-card">
+        <div class="quick-grid gallery-filter-grid">
+          <div class="field">
+            <label for="gallerySearch">Search</label>
+            <input id="gallerySearch" class="input" placeholder="예: forest, rain, luxury" />
+          </div>
+          <div class="field">
+            <label for="galleryMoodFilter">Mood</label>
+            <select id="galleryMoodFilter" class="select"></select>
+          </div>
+          <div class="field gallery-count-field">
+            <label>Results</label>
+            <div class="notice"><strong id="galleryCount">0</strong>개 예시</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </section>
+  </main>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
