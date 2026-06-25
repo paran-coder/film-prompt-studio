@@ -98,14 +98,21 @@
       strength: 'balanced'
     };
 
-    const presetParam = getParam('preset');
-    if (presetParam) applyPreset(presetParam, false);
-    const subjectParam = getParam('subject');
-    if (subjectParam) state.mainSubject = subjectParam;
-    const moodParam = getParam('mood');
-    if (moodParam) state.moodId = moodParam;
-    const ratioParam = getParam('ratio');
-    if (ratioParam) state.ratio = ratioParam;
+    let currentTab = 'midjourney';
+
+    const savedParam = getParam('saved');
+    if (savedParam && applySaved(savedParam)) {
+      // Saved prompt restored from localStorage.
+    } else {
+      const presetParam = getParam('preset');
+      if (presetParam) applyPreset(presetParam, false);
+      const subjectParam = getParam('subject');
+      if (subjectParam) state.mainSubject = subjectParam;
+      const moodParam = getParam('mood');
+      if (moodParam) state.moodId = moodParam;
+      const ratioParam = getParam('ratio');
+      if (ratioParam) state.ratio = ratioParam;
+    }
 
     function applyPreset(id, shouldRender=true){
       const p = E().byId(D().presets, id);
@@ -137,6 +144,19 @@
         Object.assign(state, { mainSubject:'a lone courier in a reflective rain jacket', visibleTrait:'black helmet and glowing wrist device', actionPose:'stands on a wet pedestrian bridge', place:'futuristic city street', foreground:'cyan neon reflections on black pavement', background:'glass towers and holographic signs', weatherTime:'rainy night atmosphere' });
       }
       if (shouldRender) renderAll();
+    }
+
+    function applySaved(id){
+      const saved = E().getSaved().find(item => item.id === id);
+      if (!saved || !saved.input) return false;
+      Object.assign(state, saved.input);
+      state.effectIds = Array.isArray(state.effectIds) ? state.effectIds : [];
+      state.selectedVisualDetails = Array.isArray(state.selectedVisualDetails) ? state.selectedVisualDetails : [];
+      state.ratio = state.ratio || 'auto';
+      state.platform = state.platform || preferredPlatform(saved);
+      currentTab = preferredPlatform(saved);
+      setTimeout(() => toast('저장한 프롬프트를 Builder로 불러왔습니다.'), 250);
+      return true;
     }
 
     function hydrateControls(){
@@ -206,12 +226,13 @@
     }
 
     let currentResult = null;
-    let currentTab = 'midjourney';
 
     function renderOutputs(){
       const result = E().generatePrompts(state);
       currentResult = result;
       const map = { midjourney: result.prompts.midjourney, gpt: result.prompts.gpt, universal: result.prompts.universal };
+      if (!map[currentTab]) currentTab = 'midjourney';
+      $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === currentTab));
       $('#promptOutput').value = map[currentTab];
       $('#negativeOutput').value = result.prompts.negative;
       $('#resolvedRatio').textContent = `적용 비율: --ar ${result.ctx.ratio}`;
@@ -280,6 +301,7 @@
         input: currentResult.input,
         outputs: currentResult.prompts,
         score: currentResult.score,
+        selectedPlatform: currentTab,
         tags: [state.moodId, state.filmId, state.lensId].filter(Boolean)
       });
       renderOutputs();
@@ -319,6 +341,21 @@
       ta.remove();
       toast('복사되었습니다.');
     }
+  }
+
+
+  function platformLabel(key){
+    return ({ midjourney:'Midjourney 8.1', gpt:'GPT Image', universal:'Universal' })[key] || 'Midjourney 8.1';
+  }
+
+  function preferredPlatform(item){
+    const key = item?.selectedPlatform || item?.platform || 'midjourney';
+    return ['midjourney','gpt','universal'].includes(key) ? key : 'midjourney';
+  }
+
+  function preferredOutput(item){
+    const key = preferredPlatform(item);
+    return item?.outputs?.[key] || item?.outputs?.midjourney || item?.outputs?.gpt || item?.outputs?.universal || '';
   }
 
   function presetInputFor(id){
@@ -468,17 +505,23 @@
         return !q || haystack.includes(q);
       });
       const target = $('#workspaceList');
-      if (target) target.innerHTML = list.map(item => `<article class="saved-card">
-        <div class="saved-top"><div><h3>${esc(item.title || 'Untitled Prompt')}</h3><small>Score ${item.score?.total || '-'} · ${esc(item.createdAt?.slice(0,10) || '')}</small></div><button class="icon-btn ${item.favorite?'active':''}" data-fav="${esc(item.id)}" type="button">★</button></div>
-        <p>${esc(item.outputs?.midjourney?.split('\n')[0] || item.input?.mainSubject || '')}</p>
+      if (target) target.innerHTML = list.map(item => {
+        const primary = preferredPlatform(item);
+        const platforms = ['midjourney','gpt','universal'];
+        const platformBadges = platforms.map(key => `<span class="platform-badge ${key === primary ? 'active' : ''}">${platformLabel(key)}</span>`).join('');
+        return `<article class="saved-card">
+        <div class="saved-top"><div><h3>${esc(item.title || 'Untitled Prompt')}</h3><small>Score ${item.score?.total || '-'} · ${esc(item.createdAt?.slice(0,10) || '')} · 기본 출력: ${platformLabel(primary)}</small></div><button class="icon-btn ${item.favorite?'active':''}" data-fav="${esc(item.id)}" type="button">★</button></div>
+        <div class="platform-badges">${platformBadges}</div>
+        <p>${esc(preferredOutput(item).split('\n')[0] || item.input?.mainSubject || '')}</p>
         <div class="tags">${(item.tags||[]).slice(0,5).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
-        <div class="card-actions"><a class="btn small primary" href="builder.html?saved=${encodeURIComponent(item.id)}">열기</a><button class="btn small secondary" data-copy="${esc(item.id)}" type="button">복사</button><button class="btn small secondary" data-dup="${esc(item.id)}" type="button">복제</button><button class="btn small ghost" data-del="${esc(item.id)}" type="button">삭제</button></div>
-      </article>`).join('') || '<div class="notice">저장된 프롬프트가 없습니다.</div>';
+        <div class="card-actions"><a class="btn small primary" href="builder.html?saved=${encodeURIComponent(item.id)}">Builder로 열기</a><button class="btn small secondary" data-copy="${esc(item.id)}" type="button">기본 출력 복사</button><button class="btn small secondary" data-dup="${esc(item.id)}" type="button">복제</button><button class="btn small ghost" data-del="${esc(item.id)}" type="button">삭제</button></div>
+      </article>`;
+      }).join('') || '<div class="notice">저장된 프롬프트가 없습니다.</div>';
       if ($('#workspaceCount')) $('#workspaceCount').textContent = String(list.length);
-      $$('#workspaceList [data-copy]').forEach(btn => btn.addEventListener('click', () => { const item=E().getSaved().find(x=>x.id===btn.dataset.copy); copyText(item?.outputs?.midjourney || ''); }));
+      $$('#workspaceList [data-copy]').forEach(btn => btn.addEventListener('click', () => { const item=E().getSaved().find(x=>x.id===btn.dataset.copy); copyText(preferredOutput(item)); }));
       $$('#workspaceList [data-del]').forEach(btn => btn.addEventListener('click', () => { setSavedList(E().getSaved().filter(x=>x.id!==btn.dataset.del)); render(); }));
       $$('#workspaceList [data-fav]').forEach(btn => btn.addEventListener('click', () => { const list=E().getSaved(); const item=list.find(x=>x.id===btn.dataset.fav); if (item) item.favorite=!item.favorite; setSavedList(list); render(); }));
-      $$('#workspaceList [data-dup]').forEach(btn => btn.addEventListener('click', () => { const item=E().getSaved().find(x=>x.id===btn.dataset.dup); if (item) E().saveLocal(Object.assign({}, item, { title:(item.title || 'Prompt')+' Copy' })); render(); }));
+      $$('#workspaceList [data-dup]').forEach(btn => btn.addEventListener('click', () => { const item=E().getSaved().find(x=>x.id===btn.dataset.dup); if (item) { const copy = Object.assign({}, item, { title:(item.title || 'Prompt')+' Copy' }); delete copy.id; delete copy.createdAt; delete copy.updatedAt; E().saveLocal(copy); } render(); }));
     }
     ['workspaceSearch','workspaceTab'].forEach(id => $('#'+id)?.addEventListener('input', render));
     $('#workspaceTab')?.addEventListener('change', render);
