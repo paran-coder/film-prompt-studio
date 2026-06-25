@@ -1,4 +1,4 @@
-# Film Prompt Studio v14
+# Film Prompt Studio v15
 
 필름 감성, 렌즈, 구도, 앵글, 조명, 필름 효과를 조합해 **Midjourney 8.1 / GPT Image / Universal** 이미지 프롬프트를 생성하는 순수 HTML/CSS/JavaScript 정적 웹앱입니다.
 
@@ -6,7 +6,7 @@
 
 ## 현재 기준
 
-- 기준 버전: `v14`
+- 기준 버전: `v15`
 - 디자인 기준: `v3 index` 유지
 - 기능 기준: `v5 이후 프롬프트 엔진 / 저장 / 프리셋 확장 기능 유지`
 - 배포 기준: `GitHub Pages root 배포`
@@ -50,7 +50,7 @@ film-prompt-studio/
 
 ## 최신 변경 사항
 
-### v14
+### v15
 
 - Workspace에서 저장한 프롬프트를 `builder.html?saved=...`로 열면 Builder 입력값, 사진 문법 옵션, 출력 탭이 복원되도록 수정했습니다.
 - Workspace 저장 카드에 기본 출력 형식과 Midjourney 8.1 / GPT Image / Universal 보유 여부를 더 명확하게 표시했습니다.
@@ -128,7 +128,7 @@ assets/
 
 ```text
 잘못된 구조:
-repository/film-prompt-studio-v14/index.html
+repository/film-prompt-studio-v15/index.html
 
 올바른 구조:
 repository/index.html
@@ -204,6 +204,6 @@ js/: 프롬프트 엔진, 저장, 필터 기능 수정 가능
 Presets and Gallery were restored to the v4 content set: 32 curated presets, v4-style preset detail, and v4-style gallery cards. `index.html` remains fixed from the restored v3-style baseline.
 
 
-## v14 note
+## v15 note
 
 Workspace saved prompt restoration and output-format badges are now active. The home visual uses `assets/images/home-hero-guide.png`.

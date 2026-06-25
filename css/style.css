@@ -207,3 +207,30 @@ img{max-width:100%;display:block}
 .saved-card .card-actions .btn.primary{min-width:110px}
 @media(max-width:720px){.hero-generated-art{width:min(100%,520px)}}
 @media(max-width:720px){.hero-image-stack{display:none}}
+
+
+/* v15: restore Builder-style hero rhythm for Presets and Gallery */
+.page-standard-hero{padding:42px 0 10px}
+.page-standard-hero .container{display:grid;grid-template-columns:minmax(0,0.9fr) minmax(360px,0.78fr);gap:48px;align-items:end}
+.page-standard-hero .eyebrow{grid-column:1/-1;width:max-content}
+.page-standard-hero h1{margin:6px 0 0;line-height:1.02;max-width:720px;font-size:clamp(34px,5vw,56px);letter-spacing:-.06em;word-break:keep-all;text-wrap:balance}
+.page-standard-hero p{justify-self:end;max-width:560px;line-height:1.82;word-break:keep-all;color:var(--muted);margin:0;font-size:16px}
+.legacy-page-body{padding:30px 0 68px}
+.preset-filter-row{grid-template-columns:minmax(220px,1fr) minmax(180px,240px) minmax(180px,240px) auto}
+.gallery-filter-row{grid-template-columns:minmax(220px,1fr) minmax(180px,260px) auto auto}
+.count-inline{align-self:center;justify-self:end;min-height:42px}
+@media(max-width:1000px){
+  .page-standard-hero .container{grid-template-columns:1fr;gap:18px}
+  .page-standard-hero p{justify-self:start;max-width:760px}
+  .preset-filter-row,.gallery-filter-row{grid-template-columns:1fr 1fr}
+  .count-inline{justify-self:start}
+}
+@media(max-width:720px){
+  .page-standard-hero{padding:28px 0 6px}
+  .page-standard-hero .eyebrow{width:auto}
+  .page-standard-hero h1{font-size:38px;line-height:1.03;letter-spacing:-.06em}
+  .page-standard-hero p{font-size:16px;line-height:1.7}
+  .preset-filter-row,.gallery-filter-row{grid-template-columns:1fr}
+  .gallery-filter-row .btn{width:100%}
+  .legacy-page-body{padding-top:22px}
+}

@@ -29,23 +29,24 @@
     </div>
   </header>
 
-  <main class="section gallery-legacy-page">
-    <div class="container">
-      <div class="section-head gallery-legacy-head">
-        <div>
-          <span class="eyebrow"><span class="dot"></span> Prompt Gallery</span>
-          <h1 class="legacy-page-title">결과 감성을 보고<br>조합을 선택하십시오</h1>
-          <p>갤러리는 프리셋이 어떤 이미지 분위기로 이어지는지 보여주는 쇼케이스입니다. 마음에 드는 예시를 고르면 같은 조합을 Builder로 불러와 피사체와 장면을 바꿀 수 있습니다.</p>
-        </div>
-        <strong id="galleryCount" class="eyebrow count-pill">0 examples</strong>
+  <main class="gallery-legacy-page">
+    <section class="builder-header page-standard-hero">
+      <div class="container">
+        <span class="eyebrow"><span class="dot"></span> Prompt Gallery</span>
+        <h1>결과 감성을 보고<br>조합을 선택하십시오</h1>
+        <p>갤러리는 프리셋이 어떤 이미지 분위기로 이어지는지 보여주는 쇼케이스입니다. 마음에 드는 예시를 고르면 같은 조합을 Builder로 불러와 피사체와 장면을 바꿀 수 있습니다.</p>
       </div>
-      <div class="filters legacy-filters">
+    </section>
+
+    <section class="container legacy-page-body">
+      <div class="filters legacy-filters gallery-filter-row">
         <input id="gallerySearch" class="input" placeholder="검색: cafe, rain, portrait..." />
         <select id="galleryMood" class="select"></select>
         <a class="btn primary" href="builder.html">새로 만들기</a>
+        <strong id="galleryCount" class="eyebrow count-pill count-inline">0 examples</strong>
       </div>
       <div id="galleryList" class="grid-3 legacy-gallery-grid"></div>
-    </div>
+    </section>
   </main>
 
   <div class="toast" role="status" aria-live="polite"></div>

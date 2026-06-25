@@ -29,26 +29,27 @@
     </div>
   </header>
 
-  <main class="section preset-legacy-page">
-    <div class="container">
-      <div class="section-head preset-legacy-head">
-        <div>
-          <span class="eyebrow"><span class="dot"></span> Preset Library</span>
-          <h1 class="legacy-page-title">검증된 조합으로<br>빠르게 시작하십시오</h1>
-          <p>프리셋은 완성 이미지가 아니라 Builder에 불러오는 촬영 레시피입니다. 무드, 필름, 렌즈, 구도, 빛이 미리 맞춰져 있으니 피사체와 장면만 바꿔 새로운 프롬프트로 확장하십시오.</p>
-        </div>
-        <strong id="presetCount" class="eyebrow count-pill">0 presets</strong>
+  <main class="preset-legacy-page">
+    <section class="builder-header page-standard-hero">
+      <div class="container">
+        <span class="eyebrow"><span class="dot"></span> Preset Library</span>
+        <h1>검증된 조합으로<br>빠르게 시작하십시오</h1>
+        <p>프리셋은 완성 이미지가 아니라 Builder에 불러오는 촬영 레시피입니다. 무드, 필름, 렌즈, 구도, 빛이 미리 맞춰져 있으니 피사체와 장면만 바꿔 새로운 프롬프트로 확장하십시오.</p>
       </div>
-      <div class="filters legacy-filters">
+    </section>
+
+    <section class="container legacy-page-body">
+      <div class="filters legacy-filters preset-filter-row">
         <input id="presetSearch" class="input" placeholder="검색: rain, product, cafe..." />
         <select id="filterMood" class="select"></select>
         <select id="filterFilm" class="select"></select>
+        <strong id="presetCount" class="eyebrow count-pill count-inline">0 presets</strong>
       </div>
       <div class="split-page">
         <div id="presetList" class="preset-list"></div>
         <aside class="panel detail-panel" id="presetDetail"></aside>
       </div>
-    </div>
+    </section>
   </main>
 
   <div class="toast" role="status" aria-live="polite"></div>
