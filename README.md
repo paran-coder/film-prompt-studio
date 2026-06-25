@@ -1,4 +1,4 @@
-# Film Prompt Studio v5
+# Film Prompt Studio v11
 
 필름 감성, 렌즈, 구도, 앵글, 조명, 필름 효과를 조합해 Midjourney 8.1 / GPT Image / Universal 이미지 프롬프트를 생성하는 순수 HTML/CSS/JavaScript 정적 웹앱입니다.
 
