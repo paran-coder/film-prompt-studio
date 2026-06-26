@@ -126,24 +126,19 @@
       state.lightingId = p.lighting;
       state.effectIds = [...p.effects];
       state.ratio = p.ratio || 'auto';
+      if (p.input) {
+        Object.assign(state, p.input);
+      }
       const mood = E().byId(D().moods, state.moodId);
-      state.selectedVisualDetails = (mood?.visualDetails || []).slice(0,3);
-      if (id === 'luxury_product') {
-        Object.assign(state, { mainSubject:'a clear glass perfume bottle', visibleTrait:'pale gold liquid and thin gold trim', actionPose:'sits centered on a black marble surface', place:'minimal studio set', foreground:'deep velvet fabric and clear glass reflections', background:'soft amber light on a neutral wall', weatherTime:'' });
+      state.selectedVisualDetails = Array.isArray(p.input?.selectedVisualDetails)
+        ? [...p.input.selectedVisualDetails]
+        : (mood?.visualDetails || []).slice(0,3);
+      const presetSelect = $('#presetSelect');
+      if (presetSelect) presetSelect.value = id;
+      if (shouldRender) {
+        syncInputsFromState();
+        renderAll({ readFromDom: false });
       }
-      if (id === 'blue_forest') {
-        Object.assign(state, { mainSubject:'a narrow forest trail', visibleTrait:'blue mist between tall pine trees', actionPose:'leads into the distance at dawn', place:'cold morning forest', foreground:'wet moss and dark roots', background:'pale blue sky behind tree silhouettes', weatherTime:'soft morning haze' });
-      }
-      if (id === 'wedding_portra') {
-        Object.assign(state, { mainSubject:'a bride holding a small bouquet', visibleTrait:'cream silk dress and soft veil', actionPose:'turns toward warm backlight', place:'quiet garden aisle', foreground:'white petals on the ground', background:'blurred guests and pale flowers', weatherTime:'golden hour light' });
-      }
-      if (id === 'japanese_everyday') {
-        Object.assign(state, { mainSubject:'a young woman with a canvas tote bag', visibleTrait:'short dark hair and a pale linen shirt', actionPose:'stands beside a vending machine on a quiet street', place:'small Japanese seaside town', foreground:'painted road markings and a parked bicycle', background:'cream walls and pastel green shutters', weatherTime:'soft natural daylight' });
-      }
-      if (id === 'future_city') {
-        Object.assign(state, { mainSubject:'a lone courier in a reflective rain jacket', visibleTrait:'black helmet and glowing wrist device', actionPose:'stands on a wet pedestrian bridge', place:'futuristic city street', foreground:'cyan neon reflections on black pavement', background:'glass towers and holographic signs', weatherTime:'rainy night atmosphere' });
-      }
-      if (shouldRender) renderAll();
     }
 
     function applySaved(id){
@@ -262,8 +257,9 @@
       $('#savedCount').textContent = E().getSaved().length;
     }
 
-    function renderAll(){
-      readBasicInputs();
+    function renderAll(options = {}){
+      const readFromDom = options.readFromDom !== false;
+      if (readFromDom) readBasicInputs();
       renderMoodDetails();
       syncInputsFromState();
       renderCardsActive();
