@@ -159,6 +159,17 @@
       return true;
     }
 
+
+    function applySubjectTypeDefaults(type){
+      const lensMap = { portrait_closeup:'85mm', full_body:'35mm', fashion_editorial:'85mm', cinematic_scene:'35mm', landscape:'24mm', product:'macro', food:'macro', interior:'24mm', architecture:'24mm', character:'50mm', sns_square:'35mm' };
+      const angleMap = { portrait_closeup:'close_up', full_body:'eye_level', fashion_editorial:'eye_level', product:'eye_level', food:'eye_level', architecture:'low_angle', landscape:'wide_shot', character:'eye_level' };
+      const compositionMap = { portrait_closeup:'centered', full_body:'rule_of_thirds', fashion_editorial:'rule_of_thirds', product:'centered', food:'centered', architecture:'symmetrical', landscape:'layered_depth', cinematic_scene:'diagonal' };
+      if (lensMap[type]) state.lensId = lensMap[type];
+      if (angleMap[type]) state.angleId = angleMap[type];
+      if (compositionMap[type]) state.compositionId = compositionMap[type];
+      state.ratio = 'auto';
+    }
+
     function hydrateControls(){
       setOptions($('#subjectType'), D().subjectTypes);
       setOptions($('#ratio'), [
@@ -267,10 +278,12 @@
       const el = $('#'+id);
       if (el) el.addEventListener('input', () => {
         if (id === 'moodId') state.selectedVisualDetails = [];
+        if (id === 'subjectType') applySubjectTypeDefaults(el.value);
         renderAll();
       });
       if (el) el.addEventListener('change', () => {
         if (id === 'moodId') state.selectedVisualDetails = [];
+        if (id === 'subjectType') applySubjectTypeDefaults(el.value);
         renderAll();
       });
     });

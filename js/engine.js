@@ -63,6 +63,57 @@
   function defaultLighting(type){
     return ({ product:"studio_directional", food:"window_light", interior:"window_light", architecture:"soft_natural", cinematic_scene:"overcast" })[type] || "soft_natural";
   }
+
+  function subjectProfile(type){
+    const map = {
+      portrait_closeup: {
+        prefix: "A close-up portrait of",
+        framing: "tight close-up portrait framing, face and upper shoulders visible",
+        action: "The face and upper shoulders fill the frame, with facial expression and skin texture clearly visible"
+      },
+      full_body: {
+        prefix: "A full-body portrait of",
+        framing: "full-body framing, the entire figure visible from head to toe",
+        action: "The entire figure is visible from head to toe, with body posture and surrounding space clearly shown"
+      },
+      fashion_editorial: {
+        prefix: "An editorial fashion portrait of",
+        framing: "editorial fashion framing, outfit silhouette and styling clearly visible",
+        action: "The pose emphasizes the outfit silhouette, styling, and body line"
+      },
+      character: {
+        prefix: "A character design image of",
+        framing: "clear character silhouette, costume and accessories visible",
+        action: "The character stands in a neutral pose with a clear silhouette"
+      }
+    };
+    return map[type] || null;
+  }
+
+  function subjectLineFor(input){
+    const profile = subjectProfile(input.subjectType);
+    const subject = input.mainSubject || "a main subject";
+    const visible = input.visibleTrait ? ` with ${input.visibleTrait}` : "";
+    const place = input.place ? ` in ${input.place}` : "";
+    if (profile?.prefix) return sentence(`${profile.prefix} ${subject}${visible}${place}`);
+    return sentence(`${subject}${visible}${place}`);
+  }
+
+  function actionLineFor(input){
+    const profile = subjectProfile(input.subjectType);
+    const action = input.actionPose;
+    if (input.subjectType === "portrait_closeup") {
+      return sentence(action ? `${action}, framed from face to upper shoulders` : profile.action);
+    }
+    if (input.subjectType === "full_body") {
+      return sentence(action ? `${action}, with the entire figure visible from head to toe` : profile.action);
+    }
+    if (input.subjectType === "fashion_editorial") {
+      return sentence(action ? `${action}, emphasizing the full outfit silhouette and styling` : profile.action);
+    }
+    return sentence(action || defaultAction(input.subjectType));
+  }
+
   function resolveLightingId(prompt){
     if (!prompt) return "";
     const match = D().lighting.find(item => item.prompt === prompt);
@@ -85,16 +136,16 @@
 
   function buildMidjourney(ctx){
     const { input, film, lens, angle, composition, lighting, effects, ratio } = ctx;
-    const visible = input.visibleTrait ? ` with ${input.visibleTrait}` : "";
-    const place = input.place ? ` in ${input.place}` : "";
-    const subjectLine = sentence(`${input.mainSubject || "A main subject"}${visible}${place}`);
-    const actionLine = sentence(input.actionPose || defaultAction(input.subjectType));
+    const profile = subjectProfile(input.subjectType);
+    const subjectLine = subjectLineFor(input);
+    const actionLine = actionLineFor(input);
     const foregroundParts = compact([input.foreground, ...(input.selectedVisualDetails || []).slice(0,2)]);
     const backgroundParts = compact([input.background, input.weatherTime, ...(input.selectedVisualDetails || []).slice(2,4)]);
     const foregroundLine = foregroundParts.length ? sentence(`${foregroundParts.join(", ")} in the foreground`) : "";
     const backgroundLine = backgroundParts.length ? sentence(`${backgroundParts.join(", ")} in the background`) : "";
     const styleParts = compact([
       film?.style,
+      profile?.framing,
       lens?.prompt,
       angle?.prompt,
       composition?.prompt,
@@ -108,6 +159,8 @@
 
   function defaultAction(type){
     const map = {
+      portrait_closeup: "The face and upper shoulders fill the frame, with facial expression and skin texture clearly visible",
+      full_body: "The entire figure is visible from head to toe, with body posture and surrounding space clearly shown",
       product: "The product is centered clearly with its key design detail visible",
       food: "The dish is arranged clearly with visible texture and garnish",
       interior: "The room is arranged with a clear furniture layout",
@@ -120,16 +173,17 @@
 
   function buildGPT(ctx){
     const { input, mood, film, lens, angle, composition, lighting, effects } = ctx;
+    const profile = subjectProfile(input.subjectType);
     const subject = `${input.mainSubject || "a main subject"}${input.visibleTrait ? ` with ${input.visibleTrait}` : ""}`;
     const scene = input.place ? ` in ${input.place}` : "";
     const lines = [
       `Create a realistic film-style image of ${subject}${scene}.`,
-      input.actionPose ? `The subject ${input.actionPose}.` : "",
+      input.actionPose ? `The subject ${input.actionPose}${input.subjectType === "portrait_closeup" ? ", framed from face to upper shoulders" : input.subjectType === "full_body" ? ", with the entire figure visible from head to toe" : ""}.` : (profile?.action ? `${profile.action}.` : ""),
       input.foreground ? `The foreground includes ${input.foreground}.` : "",
       input.background ? `The background includes ${input.background}.` : "",
       input.weatherTime ? `The time and atmosphere feel like ${input.weatherTime}.` : "",
       (input.selectedVisualDetails || []).length ? `Use visible mood details such as ${(input.selectedVisualDetails || []).join(", ")}.` : "",
-      `The style should follow ${compact([film?.style, lens?.prompt, angle?.prompt, composition?.prompt, lighting?.prompt, ...effects.map(e=>e.prompt)]).join(", ")}.`,
+      `The style should follow ${compact([film?.style, profile?.framing, lens?.prompt, angle?.prompt, composition?.prompt, lighting?.prompt, ...effects.map(e=>e.prompt)]).join(", ")}.`,
       mood ? `The mood should feel like ${mood.labelEn.toLowerCase()}, but show it through physical details rather than abstract symbolism.` : "",
       "Keep the result photographic, coherent, and visually specific."
     ];
@@ -148,6 +202,7 @@
       input.weatherTime,
       ...(input.selectedVisualDetails || []),
       film?.style,
+      subjectProfile(input.subjectType)?.framing,
       lens?.prompt,
       angle?.prompt,
       composition?.prompt,
